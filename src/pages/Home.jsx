@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Truck, PackageCheck, FlaskConical, Layers, ArrowRight, ShieldCheck,
-  BadgePercent, MapPin, Sparkles, Quote, ChevronDown,
+  Truck, PackageCheck, FlaskConical, Layers, ArrowRight,
+  Sparkles, Quote, ChevronDown,
 } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { fetchCategories, fetchProducts } from '@lib/service'
@@ -15,12 +15,6 @@ const features = [
   { icon: FlaskConical, title: 'Order Samples First', sub: 'Try any style before you commit to bulk' },
   { icon: Layers, title: '12-Pair Bundles', sub: 'Simple dozen pricing on every product' },
   { icon: Truck, title: 'Islandwide Delivery', sub: 'Reliable delivery across all of Sri Lanka' },
-]
-
-const heroStats = [
-  { value: '40+', label: 'Styles in stock' },
-  { value: '12-pair', label: 'Bundle pricing' },
-  { value: '100%', label: 'Quality checked' },
 ]
 
 const marqueeItems = [
@@ -49,27 +43,6 @@ const testimonials = [
     quote: 'The kids school socks fly off our shelf. Staff restock online in under two minutes.',
     name: 'Dilini W.',
     role: 'Supermarket chain · Colombo',
-  },
-]
-
-const heroCards = [
-  {
-    img: '/images/products/sport-running-navy.svg',
-    tag: 'Sports · Performance',
-    price: 'Rs 650 / pair',
-    cls: 'top-0 right-24 w-40 md:w-52 rotate-2 animate-floaty',
-  },
-  {
-    img: '/images/products/womens-crew-lavender.svg',
-    tag: 'New · Pastel Crew',
-    price: 'Rs 400 / pair',
-    cls: 'top-44 right-2 w-36 md:w-44 -rotate-3 animate-floaty-delay',
-  },
-  {
-    img: '/images/products/kids-school-white-blue.svg',
-    tag: 'Kids · School',
-    price: 'Rs 380 / pair',
-    cls: 'top-80 right-36 w-32 md:w-40 animate-floaty-slow',
   },
 ]
 
@@ -110,15 +83,15 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-900/90 via-brand-900/55 to-brand-900/10" />
         <div className="absolute -bottom-32 -left-32 w-[420px] h-[420px] rounded-full bg-accent-500/20 blur-3xl" />
 
-        <div className="container-brand relative z-10 py-20 grid lg:grid-cols-[1.15fr_0.85fr] items-center gap-12">
+        <div className="container-brand relative z-10 py-20">
           <motion.div style={{ y: heroTextY }}>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             >
-              <span className="badge bg-accent-500 text-white shadow-lg shadow-accent-500/30">
-                <Sparkles className="w-3.5 h-3.5" /> Sri Lanka Wholesale · Since 2024
+              <span className="badge bg-white text-brand-800">
+                <Sparkles className="w-3.5 h-3.5" /> Sri Lanka Wholesale
               </span>
             </motion.div>
 
@@ -130,8 +103,8 @@ export default function Home() {
             >
               Premium socks at{' '}
               <span className="relative inline-block">
-                <span className="text-accent-400">factory-direct</span>
-                <span className="absolute left-0 -bottom-1.5 w-full h-[6px] rounded-full bg-accent-500/70 -z-10 skew-x-[-12deg]" />
+                <span className="text-accent-300">factory-direct</span>
+                <span className="absolute left-0 -bottom-1.5 w-full h-[6px] rounded-full bg-accent-400/60 -z-10 skew-x-[-12deg]" />
               </span>{' '}
               prices.
             </motion.h1>
@@ -162,45 +135,7 @@ export default function Home() {
                 Order Samples
               </Link>
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.55 }}
-              className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3"
-            >
-              {heroStats.map((s, i) => (
-                <div key={s.label} className="flex items-center gap-8">
-                  {i > 0 && <span className="hidden sm:block w-px h-9 bg-white/20" />}
-                  <div>
-                    <p className="font-heading text-xl font-extrabold text-white">{s.value}</p>
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-widest text-white/60">{s.label}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
-
-          {/* Floating product cards (desktop) */}
-          <div className="relative hidden lg:block h-[460px]">
-            {heroCards.map((c, i) => (
-              <motion.div
-                key={c.tag}
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.7, delay: 0.35 + i * 0.15, ease: [0.21, 0.47, 0.32, 0.98] }}
-                className={`absolute ${c.cls}`}
-              >
-                <div className="rounded-3xl bg-white/95 backdrop-blur p-3 shadow-2xl shadow-black/30">
-                  <img src={c.img} alt={c.tag} className="w-full aspect-square rounded-2xl object-cover" />
-                  <div className="flex items-center justify-between px-1 py-1.5">
-                    <p className="text-[0.68rem] font-bold uppercase tracking-widest text-muted-ink">{c.tag}</p>
-                    <p className="text-[0.72rem] font-extrabold text-accent-600">{c.price}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         <motion.a
@@ -287,30 +222,6 @@ export default function Home() {
                   </span>
                 </div>
               </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* STATS BAND */}
-      <section className="relative bg-brand-700 overflow-hidden py-14 md:py-16">
-        <div className="absolute -top-20 right-0 w-80 h-80 rounded-full bg-accent-500/20 blur-3xl" />
-        <div className="absolute -bottom-24 -left-16 w-80 h-80 rounded-full bg-white/5 blur-3xl" />
-        <div className="container-brand relative grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 text-center">
-          {[
-            { icon: Layers, value: '12', label: 'Pairs per bundle' },
-            { icon: MapPin, value: '25', label: 'Districts delivered' },
-            { icon: ShieldCheck, value: '100%', label: 'Quality checked' },
-            { icon: Truck, value: '3–5', label: 'Day delivery' },
-          ].map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.08}>
-              <div className="flex flex-col items-center">
-                <span className="w-12 h-12 rounded-full bg-white/10 border border-white/15 text-accent-400 flex items-center justify-center mb-3">
-                  <s.icon className="w-5 h-5" strokeWidth={1.8} />
-                </span>
-                <p className="font-heading text-3xl font-extrabold text-white">{s.value}</p>
-                <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-white/60">{s.label}</p>
-              </div>
             </Reveal>
           ))}
         </div>
@@ -419,11 +330,6 @@ export default function Home() {
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-brand-900 px-6 py-16 md:px-14 md:py-20 text-center">
             <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-accent-500/25 blur-3xl animate-pulse" />
             <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
-            <img
-              src="/images/products/men-crew-navy.svg"
-              alt=""
-              className="absolute -bottom-10 -right-8 w-52 opacity-20 rotate-12 pointer-events-none hidden md:block"
-            />
             <div className="relative">
               <span className="badge bg-accent-500 text-white shadow-lg shadow-accent-500/30">
                 <FlaskConical className="w-3.5 h-3.5" /> Try before you buy

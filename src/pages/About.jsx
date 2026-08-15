@@ -10,13 +10,6 @@ const values = [
   { icon: Truck, title: 'Reliable delivery', sub: 'Consistent islandwide delivery with order confirmations on WhatsApp.' },
 ]
 
-const stats = [
-  { value: '6', label: 'Collections' },
-  { value: '17+', label: 'Styles' },
-  { value: '12', label: 'Pairs per bundle' },
-  { value: '9', label: 'Provinces served' },
-]
-
 export default function About() {
   return (
     <div className="overflow-x-hidden">
@@ -34,18 +27,6 @@ export default function About() {
               full 12-pair bundles.
             </p>
           </Reveal>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="container-brand py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.07} className="text-center">
-              <p className="font-heading text-4xl font-extrabold text-brand-700">{s.value}</p>
-              <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-muted-ink">{s.label}</p>
-            </Reveal>
-          ))}
         </div>
       </section>
 

@@ -80,17 +80,27 @@ export default function Home() {
           style={{ y: heroImgY }}
           className="absolute inset-0 w-full h-full object-cover scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-900/90 via-brand-900/55 to-brand-900/10" />
-        <div className="absolute -bottom-32 -left-32 w-[420px] h-[420px] rounded-full bg-accent-500/20 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-900/95 via-brand-900/70 to-brand-900/30" />
+        <div className="absolute inset-0 bg-dots" />
+        <div className="absolute -bottom-32 -left-32 w-[420px] h-[420px] rounded-full bg-white/5 blur-3xl" />
 
-        <div className="container-brand relative z-10 py-20">
+        {/* Ghost watermark */}
+        <span
+          aria-hidden
+          className="hidden md:block absolute -right-4 bottom-6 font-heading font-extrabold leading-none tracking-tighter select-none pointer-events-none text-outline"
+          style={{ fontSize: 'clamp(120px, 20vw, 260px)' }}
+        >
+          SOCKS CO
+        </span>
+
+        <div className="container-brand relative z-10 py-20 grid lg:grid-cols-[1.1fr_0.9fr] items-center gap-12">
           <motion.div style={{ y: heroTextY }}>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             >
-              <span className="badge bg-white text-brand-800">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/5 text-white text-[0.72rem] font-bold uppercase tracking-[0.18em]">
                 <Sparkles className="w-3.5 h-3.5" /> Sri Lanka Wholesale
               </span>
             </motion.div>
@@ -99,12 +109,13 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="mt-6 font-heading text-[2.6rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.04]"
+              className="mt-6 font-heading text-[2.7rem] sm:text-6xl lg:text-[4.4rem] font-extrabold tracking-tight text-white leading-[1.02]"
             >
-              Premium socks at{' '}
+              Premium socks.{' '}
+              <span className="block">Factory-</span>
               <span className="relative inline-block">
-                <span className="text-accent-300">factory-direct</span>
-                <span className="absolute left-0 -bottom-1.5 w-full h-[6px] rounded-full bg-accent-400/60 -z-10 skew-x-[-12deg]" />
+                <span className="text-outline !text-transparent font-extrabold">direct</span>
+                <span className="absolute left-0 -bottom-1.5 w-full h-[7px] rounded-full bg-accent-400/70 -z-10 skew-x-[-12deg]" />
               </span>{' '}
               prices.
             </motion.h1>
@@ -135,6 +146,72 @@ export default function Home() {
                 Order Samples
               </Link>
             </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.55 }}
+              className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold uppercase tracking-[0.16em] text-white/55"
+            >
+              {["Men's", "Women's", "Kids'", 'Sports', 'Casual', 'Formal'].map((c, i, arr) => (
+                <span key={c} className="flex items-center gap-3">
+                  {i > 0 && <span className="w-1 h-1 rotate-45 bg-accent-400" />}
+                  {c}
+                </span>
+              ))}
+            </motion.p>
+          </motion.div>
+
+          {/* Decorative emblem (desktop) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="relative hidden lg:flex items-center justify-center h-[540px]"
+          >
+            <span className="absolute w-72 h-72 rounded-full border border-white/15" />
+            <span className="absolute w-[22rem] h-[22rem] rounded-full border border-dashed border-white/20" />
+            <span className="absolute w-[28rem] h-[28rem] rounded-full border border-white/10" />
+            <span className="absolute w-[34rem] h-[34rem] rounded-full border border-white/5" />
+
+            <div className="relative w-56 h-56 rounded-full bg-white text-brand-900 flex items-center justify-center shadow-2xl shadow-black/50">
+              <span className="font-heading text-[7rem] font-extrabold leading-none -mt-2">S</span>
+            </div>
+
+            {/* Rotating badge */}
+            <div className="absolute -top-6 right-10 w-28 h-28 animate-spin-slow">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <defs>
+                  <path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
+                </defs>
+                <text fontSize="8" fill="#fff" fontWeight="700" letterSpacing="1.5">
+                  <textPath href="#circ">WHOLESALE · QUALITY · SAMPLES · </textPath>
+                </text>
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="w-2.5 h-2.5 rotate-45 bg-white" />
+              </span>
+            </div>
+
+            {/* Glass chips */}
+            <div className="absolute top-20 -left-6 flex items-center gap-3 rounded-2xl bg-white/10 border border-white/20 backdrop-blur px-4 py-3">
+              <span className="w-9 h-9 rounded-xl bg-white text-brand-900 flex items-center justify-center">
+                <FlaskConical className="w-4 h-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold text-white">Order samples first</p>
+                <p className="text-[0.68rem] text-white/60 uppercase tracking-widest">Try before bulk</p>
+              </div>
+            </div>
+            <div className="absolute bottom-24 -right-2 flex items-center gap-3 rounded-2xl bg-white/10 border border-white/20 backdrop-blur px-4 py-3">
+              <span className="w-9 h-9 rounded-xl bg-white text-brand-900 flex items-center justify-center">
+                <PackageCheck className="w-4 h-4" />
+              </span>
+              <div>
+                <p className="text-xs font-bold text-white">Wholesale only</p>
+                <p className="text-[0.68rem] text-white/60 uppercase tracking-widest">Factory-direct</p>
+              </div>
+            </div>
           </motion.div>
         </div>
 

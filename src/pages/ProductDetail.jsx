@@ -102,7 +102,10 @@ export default function ProductDetail() {
 
         {/* Info */}
         <Reveal delay={0.1}>
-          <span className="badge bg-brand-50 text-brand-700">{product.category_name || 'Wholesale Socks'}</span>
+          <span className="badge bg-brand-50 text-brand-700">
+            {product.category?.name || 'Wholesale Socks'}
+            {product.subcategory?.name ? ` · ${product.subcategory.name}` : ''}
+          </span>
           <h1 className="mt-3 font-heading text-3xl md:text-4xl font-extrabold tracking-tight text-brand-800">
             {product.name}
           </h1>

@@ -18,6 +18,7 @@ const emptyProduct = {
   colors: '',
   sizes: '',
   category_id: '',
+  subcategory_id: '',
   stock: '',
   is_featured: false,
   is_new: false,
@@ -27,6 +28,7 @@ const emptyProduct = {
 export default function AdminProducts() {
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
+  const [subcategories, setSubcategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState(null)
@@ -39,11 +41,13 @@ export default function AdminProducts() {
   const fetchData = async () => {
     const { data: p } = await supabase
       .from('products')
-      .select('*, category:categories(name, slug)')
+      .select('*, category:categories(name, slug), subcategory:subcategories(name)')
       .order('created_at', { ascending: false })
     setProducts(p || [])
     const { data: c } = await supabase.from('categories').select('*').order('sort_order')
     setCategories(c || [])
+    const { data: s } = await supabase.from('subcategories').select('*').order('sort_order')
+    setSubcategories(s || [])
     setLoading(false)
   }
 
@@ -70,6 +74,7 @@ export default function AdminProducts() {
       colors: (product.colors || []).join(', '),
       sizes: (product.sizes || []).join(', '),
       category_id: product.category_id || '',
+      subcategory_id: product.subcategory_id || '',
       stock: product.stock?.toString() || '0',
       is_featured: product.is_featured,
       is_new: product.is_new,
@@ -93,6 +98,7 @@ export default function AdminProducts() {
       colors: form.colors.split(',').map((s) => s.trim()).filter(Boolean),
       sizes: form.sizes.split(',').map((s) => s.trim()).filter(Boolean),
       category_id: form.category_id || null,
+      subcategory_id: form.subcategory_id || null,
       stock: Number(form.stock) || 0,
       is_featured: form.is_featured,
       is_new: form.is_new,
@@ -140,6 +146,14 @@ export default function AdminProducts() {
   const set = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }))
   const setBool = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.checked }))
 
+  const handleCategoryChange = (e) => {
+    const catId = e.target.value
+    const valid = subcategories.some((s) => s.category_id === catId && s.id === form.subcategory_id)
+    setForm((prev) => ({ ...prev, category_id: catId, subcategory_id: valid ? prev.subcategory_id : '' }))
+  }
+
+  const categorySubs = subcategories.filter((s) => s.category_id === form.category_id)
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -165,6 +179,7 @@ export default function AdminProducts() {
                 <th className="text-left px-5 py-3 font-semibold text-gray-400">Image</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-400">Name</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-400">Category</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-400">Subcategory</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-400">Per pair</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-400">Bundle</th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-400">Stock</th>
@@ -177,7 +192,7 @@ export default function AdminProducts() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-5 py-12 text-center text-gray-400">
+                  <td colSpan={11} className="px-5 py-12 text-center text-gray-400">
                     No products found.
                   </td>
                 </tr>
@@ -197,6 +212,7 @@ export default function AdminProducts() {
                       <p className="font-semibold text-gray-700 max-w-[180px] truncate">{p.name}</p>
                     </td>
                     <td className="px-5 py-3 text-gray-500">{p.category?.name || '—'}</td>
+                    <td className="px-5 py-3 text-gray-500">{p.subcategory?.name || '—'}</td>
                     <td className="px-5 py-3 text-gray-700 font-semibold">{formatLKR(p.price_per_pair)}</td>
                     <td className="px-5 py-3 text-gray-700">{p.bundle_price ? formatLKR(p.bundle_price) : '—'}</td>
                     <td className="px-5 py-3">
@@ -320,7 +336,7 @@ export default function AdminProducts() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1.5">Category</label>
-                    <select value={form.category_id} onChange={set('category_id')} className="input-brand">
+                    <select value={form.category_id} onChange={handleCategoryChange} className="input-brand">
                       <option value="">Select category</option>
                       {categories.map((c) => (
                         <option key={c.id} value={c.id}>{c.name}</option>
@@ -328,9 +344,24 @@ export default function AdminProducts() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Stock *</label>
-                    <input type="number" required min="0" value={form.stock} onChange={set('stock')} className="input-brand" placeholder="0" />
+                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Subcategory</label>
+                    <select
+                      value={form.subcategory_id}
+                      onChange={set('subcategory_id')}
+                      className="input-brand"
+                      disabled={!form.category_id}
+                    >
+                      <option value="">None</option>
+                      {categorySubs.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Stock *</label>
+                  <input type="number" required min="0" value={form.stock} onChange={set('stock')} className="input-brand" placeholder="0" />
                 </div>
 
                 <div className="flex items-center gap-6 pt-2">

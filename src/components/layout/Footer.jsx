@@ -14,8 +14,8 @@ export default function Footer() {
           </div>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60">
             Sri Lanka's wholesale sock supplier. Factory-direct prices on men's,
-            women's, kids' and sports socks — with sample ordering and
-            12-pair bundle pricing.
+            women's, children's, baby, school, sports and stocking styles — with
+            sample ordering and 12-pair bundle pricing.
           </p>
         </div>
 

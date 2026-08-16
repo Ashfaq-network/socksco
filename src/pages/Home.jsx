@@ -18,8 +18,9 @@ const features = [
 ]
 
 const marqueeItems = [
-  "Men's Crew", 'Sports Performance', "Women's Pastels", 'Kids School', 'Formal Dress',
-  'No-Show Liners', 'Football Grip', 'Cozy Knit', 'Knee-High', 'Everyday Ankle',
+  "Men's Socks", "Women's Socks", 'Childrens', 'Stockings',
+  'School Socks', 'Sports Socks', 'Baby Socks',
+  'Ankle · Foot · Half · Full', 'Boys · Girls · Party', 'Unisex · Party',
 ]
 
 const steps = [
@@ -47,12 +48,13 @@ const testimonials = [
 ]
 
 const catTags = {
-  mens: 'Crew · ankle · dress',
-  womens: 'Liners · knee-high · pastels',
-  kids: 'School · toddler · knee-high',
-  sports: 'Running · football · tennis',
-  casual: 'Argyle · knit · loafer',
-  formal: 'Fine rib · micro-stripe',
+  men: 'Ankle · Foot · Half · Full',
+  women: 'Ankle · Foot · Half · Full',
+  childrens: 'Boys · Girls · Party',
+  stockings: 'Stockings',
+  'school-socks': 'School Socks',
+  'sports-socks': 'Sports Socks',
+  baby: 'Unisex · Party',
 }
 
 export default function Home() {
@@ -126,8 +128,9 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="mt-6 text-white/80 text-lg leading-relaxed max-w-lg"
             >
-              Socks Co supplies men's, women's, kids' and sports socks across Sri Lanka.
-              Order samples first, then stock up in 12-pair bundles — delivered islandwide.
+              Socks Co supplies men's, women's, children's, baby, school, sports
+              and stocking styles across Sri Lanka. Order samples first, then
+              stock up in 12-pair bundles — delivered islandwide.
             </motion.p>
 
             <motion.div
@@ -153,7 +156,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.55 }}
               className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold uppercase tracking-[0.16em] text-white/55"
             >
-              {["Men's", "Women's", "Kids'", 'Sports', 'Casual', 'Formal'].map((c, i, arr) => (
+              {['Men', 'Women', 'Childrens', 'Baby', 'School', 'Sports'].map((c, i, arr) => (
                 <span key={c} className="flex items-center gap-3">
                   {i > 0 && <span className="w-1 h-1 rotate-45 bg-accent-400" />}
                   {c}
@@ -265,10 +268,10 @@ export default function Home() {
       <section className="container-brand py-16 md:py-24">
         <SectionHeading
           eyebrow="Shop by category"
-          title="Six collections. One quality bar."
+          title="Seven collections. One quality bar."
           sub="Every style is available as samples first, then in 12-pair bundles."
         />
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {categories.map((cat, i) => (
             <Reveal key={cat.id} delay={i * 0.06}>
               <Link

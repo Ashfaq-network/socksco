@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase'
-import { MOCK_CATEGORIES, MOCK_PRODUCTS, MOCK_SETTINGS } from '@data/mockData'
+import { MOCK_CATEGORIES, MOCK_PRODUCTS, MOCK_SETTINGS, MOCK_SUBCATEGORIES } from '@data/mockData'
 
 const settingsCache = { data: null, at: 0 }
 const TTL = 60000
@@ -14,10 +14,22 @@ export async function fetchCategories() {
   return data || []
 }
 
-export async function fetchProducts({ category, featured, isNew, limit } = {}) {
+export async function fetchSubcategories(categoryId) {
+  if (!isSupabaseConfigured) {
+    return MOCK_SUBCATEGORIES.filter((s) => s.category_id === categoryId)
+  }
+  let query = supabase.from('subcategories').select('*')
+  if (categoryId) query = query.eq('category_id', categoryId)
+  const { data, error } = await query.order('sort_order')
+  if (error) throw error
+  return data || []
+}
+
+export async function fetchProducts({ category, subcategory, featured, isNew, limit } = {}) {
   if (!isSupabaseConfigured) {
     let list = MOCK_PRODUCTS
     if (category) list = list.filter((p) => p.category_id === category)
+    if (subcategory) list = list.filter((p) => p.subcategory_id === subcategory)
     if (featured) list = list.filter((p) => p.is_featured)
     if (isNew) list = list.filter((p) => p.is_new)
     if (limit) list = list.slice(0, limit)
@@ -26,6 +38,7 @@ export async function fetchProducts({ category, featured, isNew, limit } = {}) {
 
   let query = supabase.from('products').select('*')
   if (category) query = query.eq('category_id', category)
+  if (subcategory) query = query.eq('subcategory_id', subcategory)
   if (featured) query = query.eq('is_featured', true)
   if (isNew) query = query.eq('is_new', true)
   if (limit) query = query.limit(limit)
@@ -40,7 +53,7 @@ export async function fetchProductBySlug(slug) {
   }
   const { data, error } = await supabase
     .from('products')
-    .select('*, category:categories(id, name, slug)')
+    .select('*, category:categories(id, name, slug), subcategory:subcategories(id, name, slug)')
     .eq('slug', slug)
     .maybeSingle()
   if (error) throw error

@@ -15,6 +15,16 @@ create table if not exists public.categories (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.subcategories (
+  id uuid primary key default gen_random_uuid(),
+  category_id uuid not null references public.categories(id) on delete cascade,
+  name text not null,
+  slug text not null,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now(),
+  unique (category_id, slug)
+);
+
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -29,6 +39,7 @@ create table if not exists public.products (
   sizes text[] not null default '{}',
   stock int not null default 0,
   category_id uuid references public.categories(id) on delete set null,
+  subcategory_id uuid references public.subcategories(id) on delete set null,
   is_featured boolean not null default false,
   is_new boolean not null default false,
   is_best_seller boolean not null default false,
@@ -95,6 +106,7 @@ create table if not exists public.store_settings (
 -- ---------- RLS ----------
 
 alter table public.categories enable row level security;
+alter table public.subcategories enable row level security;
 alter table public.products enable row level security;
 alter table public.profiles enable row level security;
 alter table public.orders enable row level security;
@@ -112,6 +124,11 @@ $$;
 -- categories
 create policy "categories public read" on public.categories for select using (true);
 create policy "categories admin write" on public.categories for all
+  using (public.is_admin()) with check (public.is_admin());
+
+-- subcategories
+create policy "subcategories public read" on public.subcategories for select using (true);
+create policy "subcategories admin write" on public.subcategories for all
   using (public.is_admin()) with check (public.is_admin());
 
 -- products

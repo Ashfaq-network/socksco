@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Loader2, Search } from 'lucide-react'
-import { fetchCategories, fetchProducts } from '@lib/service'
+import { fetchCategories, fetchSubcategories, fetchProducts } from '@lib/service'
 import ProductCard from '@components/ProductCard'
 import Reveal from '@components/ui/Reveal'
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeSlug = searchParams.get('category') || 'all'
+  const activeSub = searchParams.get('sub') || ''
 
   const [categories, setCategories] = useState([])
+  const [subcategories, setSubcategories] = useState([])
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
@@ -19,14 +21,25 @@ export default function Shop() {
     fetchCategories().then(setCategories).catch(() => setCategories([]))
   }, [])
 
+  const activeCategory = categories.find((c) => c.slug === activeSlug) || null
+
+  useEffect(() => {
+    fetchSubcategories(activeCategory?.id)
+      .then(setSubcategories)
+      .catch(() => setSubcategories([]))
+  }, [activeCategory?.id])
+
+  const activeSubcat = subcategories.find((s) => s.slug === activeSub) || null
+  const activeCategoryId = activeCategory?.id
+  const activeSubcatId = activeSubcat?.id
+
   useEffect(() => {
     setLoading(true)
-    const cat = categories.find((c) => c.slug === activeSlug)
-    fetchProducts(cat ? { category: cat.id } : {})
+    fetchProducts(activeCategoryId || activeSubcatId ? { category: activeCategoryId, subcategory: activeSubcatId } : {})
       .then(setProducts)
       .catch(() => setProducts([]))
       .finally(() => setLoading(false))
-  }, [activeSlug, categories])
+  }, [activeCategoryId, activeSubcatId])
 
   const categoryName = (id) => categories.find((c) => c.id === id)?.name || 'Wholesale Socks'
 
@@ -42,6 +55,15 @@ export default function Shop() {
     else if (sort === 'name') sorted.sort((a, b) => a.name.localeCompare(b.name))
     return sorted
   }, [products, query, sort])
+
+  const selectCategory = (slug) => {
+    const params = slug === 'all' ? {} : { category: slug }
+    setSearchParams(params)
+  }
+
+  const selectSub = (subSlug) => {
+    setSearchParams(subSlug ? { category: activeSlug, sub: subSlug } : { category: activeSlug })
+  }
 
   return (
     <div className="container-brand py-10 md:py-16">
@@ -64,7 +86,7 @@ export default function Shop() {
       <Reveal className="mb-8">
         <div className="flex flex-wrap justify-center gap-2.5">
           <button
-            onClick={() => setSearchParams({})}
+            onClick={() => selectCategory('all')}
             className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide transition-colors ${
               activeSlug === 'all'
                 ? 'bg-brand-600 text-white'
@@ -76,7 +98,7 @@ export default function Shop() {
           {categories.map((c) => (
             <button
               key={c.id}
-              onClick={() => setSearchParams({ category: c.slug })}
+              onClick={() => selectCategory(c.slug)}
               className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide transition-colors ${
                 activeSlug === c.slug
                   ? 'bg-brand-600 text-white'
@@ -87,6 +109,34 @@ export default function Shop() {
             </button>
           ))}
         </div>
+
+        {activeCategory && subcategories.length > 0 && (
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <button
+              onClick={() => selectSub('')}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-colors ${
+                !activeSub
+                  ? 'bg-brand-800 text-white'
+                  : 'bg-white text-brand-600 border border-brand-200 hover:border-brand-400'
+              }`}
+            >
+              All {activeCategory.name}
+            </button>
+            {subcategories.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => selectSub(s.slug)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-colors ${
+                  activeSub === s.slug
+                    ? 'bg-brand-800 text-white'
+                    : 'bg-white text-brand-600 border border-brand-200 hover:border-brand-400'
+                }`}
+              >
+                {s.name}
+              </button>
+            ))}
+          </div>
+        )}
       </Reveal>
 
       {/* Toolbar */}

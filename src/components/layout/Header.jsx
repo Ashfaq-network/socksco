@@ -35,8 +35,8 @@ export default function Header() {
     <header className="sticky top-0 z-50">
       <div className="bg-brand-700 text-white">
         <div className="container-brand flex items-center justify-between py-2">
-          <span className="flex items-center gap-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/90">
-            <Truck className="w-3.5 h-3.5" />
+          <span className="flex items-center gap-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/90 min-w-0 truncate">
+            <Truck className="w-3.5 h-3.5 shrink-0" />
             Wholesale only — islandwide delivery
           </span>
           <span className="hidden sm:flex items-center gap-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/90">

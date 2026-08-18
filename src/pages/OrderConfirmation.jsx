@@ -74,9 +74,9 @@ export default function OrderConfirmation() {
       {/* Notifications */}
       <Reveal className="mt-10">
         <div className="rounded-3xl bg-brand-700 p-8 text-center">
-          <h2 className="font-heading text-xl font-extrabold text-white">Track your order instantly</h2>
+          <h2 className="font-heading text-xl font-extrabold text-white">What's next?</h2>
           <p className="mt-2 text-white/70 text-sm max-w-md mx-auto">
-            Your order was also sent to the Socks Co team. Send it straight to
+            Your order was sent to the Socks Co team. Send it straight to
             their WhatsApp for the fastest confirmation.
           </p>
           <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@lib/supabase'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Loader2, X, Package, MessageCircle, RefreshCw, ChevronDown } from 'lucide-react'
+import { Loader2, X, Package, MessageCircle, RefreshCw } from 'lucide-react'
 import { formatLKR } from '@lib/format'
 
 const STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
@@ -38,28 +38,17 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true)
   const [active, setActive] = useState('ALL')
   const [selected, setSelected] = useState(null)
-  const [updating, setUpdating] = useState(false)
 
   const fetchOrders = async () => {
     const { data } = await supabase
       .from('orders')
-      .select('*, items:order_items(*), history:order_status_history(*)')
+      .select('*, items:order_items(*)')
       .order('created_at', { ascending: false })
     setOrders(data || [])
     setLoading(false)
   }
 
   useEffect(() => { fetchOrders() }, [])
-
-  const updateStatus = async (id, status) => {
-    setUpdating(true)
-    await supabase.from('orders').update({ status }).eq('id', id)
-    await supabase.from('order_status_history').insert({ order_id: id, status, note: `Marked as ${status}` })
-    const refreshed = await supabase.from('orders').select('*, items:order_items(*), history:order_status_history(*)').eq('id', id).single()
-    if (selected && selected.id === id && refreshed.data) setSelected(refreshed.data)
-    setUpdating(false)
-    fetchOrders()
-  }
 
   const tabs = ['ALL', ...STATUSES]
   const filtered = active === 'ALL' ? orders : orders.filter((o) => o.status === active)
@@ -224,51 +213,6 @@ export default function AdminOrders() {
                     <p className="text-gray-500">Total <span className="font-bold text-gray-800 text-base">{formatLKR((selected.items || []).reduce((s, it) => s + Number(it.line_total || 0), 0) + Number(selected.shipping_cost || 0))}</span></p>
                   </div>
                 </div>
-
-                <div className="rounded-2xl border border-mist p-4">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Update Status</label>
-                  <div className="flex flex-wrap gap-2">
-                    {STATUSES.map((s) => (
-                      <button
-                        key={s}
-                        disabled={updating || selected.status === s}
-                        onClick={() => updateStatus(selected.id, s)}
-                        className={`px-4 py-2 rounded-full text-sm font-bold transition-colors disabled:opacity-50 ${
-                          selected.status === s ? 'bg-brand-700 text-white' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
-                        }`}
-                      >
-                        {DISPLAY[s]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-bold text-gray-700 mb-3">Status History</h3>
-                  <div className="space-y-3">
-                    {(selected.history || []).slice().reverse().map((h) => (
-                      <div key={h.id} className="flex gap-3 text-sm">
-                        <div className="flex flex-col items-center">
-                          <span className={`w-2.5 h-2.5 rounded-full mt-1 ${statusDot[h.status]}`} />
-                          <span className="w-px h-full bg-mist flex-1" />
-                        </div>
-                        <div className="pb-1">
-                          <p className="font-semibold text-gray-700">{h.status}</p>
-                          <p className="text-gray-400 text-xs">{h.note}</p>
-                          <p className="text-gray-400 text-xs">{new Date(h.created_at).toLocaleString()}</p>
-                        </div>
-                      </div>
-                    ))}
-                    {!selected.history?.length && <p className="text-gray-400 text-sm">No history yet.</p>}
-                  </div>
-                </div>
-
-                {selected.status === 'shipped' && selected.tracking_number && (
-                  <div className="rounded-2xl bg-green-50 p-4 text-sm">
-                    <p className="font-bold text-green-700 flex items-center gap-2"><ChevronDown className="w-4 h-4" /> Tracking</p>
-                    <p className="text-green-600 mt-1">{selected.tracking_number}</p>
-                  </div>
-                )}
               </div>
             </motion.div>
           </motion.div>

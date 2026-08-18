@@ -139,12 +139,6 @@ export async function saveOrder(order) {
   const { error: itemsError } = await supabase.from('order_items').insert(orderItems)
   if (itemsError) throw itemsError
 
-  await supabase.from('order_status_history').insert({
-    order_id: data.id,
-    status: 'pending',
-    note: 'Order placed successfully',
-  })
-
   return { order: data }
 }
 
